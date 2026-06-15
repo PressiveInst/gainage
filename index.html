@@ -64,54 +64,54 @@ const EX = {
   kneehug: { n: "Genoux dans les bras", c: "Sur le dos, ramène les genoux contre la poitrine, respire.", q: "etirement genoux poitrine dos" },
 };
 
-const WARMUPS = [["jj","hk","rot"], ["hk","twist","catcow"], ["jj","twist","rot"]];
+const WARMUPS = [["jj","rot"], ["hk","catcow"], ["jj","twist"]];
 const COOLDOWNS = [["cobra","child"], ["lyingtw","kneehug"], ["child","cobra"]];
 
 const CYCLES = [
   { name: "Découverte", level: "Débutant", color: "#2BB3A3", w: [
-    { t: "Gainage tranquille",  e: ["plank","deadbug","bridge","birddog","crunch","superman"] },
-    { t: "Mise en mouvement",   e: ["bike","climb","heeltap","kneetuck","crunch","plank"] },
-    { t: "Bas du ventre",       e: ["revcrunch","flutter","bridge","bike","plank","superman"] },
+    { t: "Gainage tranquille",  e: ["plank","deadbug","bridge","crunch"] },
+    { t: "Mise en mouvement",   e: ["bike","climb","crunch","plank"] },
+    { t: "Bas du ventre",       e: ["revcrunch","flutter","bridge","plank"] },
   ]},
   { name: "Fondations", level: "Débutant", color: "#3AA0FF", w: [
-    { t: "Stabilité",           e: ["plank","birddog","crunch","splank","bridge","deadbug"] },
-    { t: "Cardio-abdos",        e: ["climb","bike","heeltap","revcrunch","plank","superman"] },
-    { t: "Jambes & ventre",     e: ["flutter","scissors","revcrunch","bridge","bike","plank"] },
+    { t: "Stabilité",           e: ["plank","splank","crunch","bridge"] },
+    { t: "Cardio-abdos",        e: ["climb","bike","revcrunch","plank"] },
+    { t: "Jambes & ventre",     e: ["flutter","scissors","revcrunch","plank"] },
   ]},
   { name: "Élan", level: "Intermédiaire", color: "#7A5CFF", w: [
-    { t: "Gainage solide",      e: ["plank","splank","hollow","deadbug","crunch","bridge"] },
-    { t: "Tempo soutenu",       e: ["climb","bike","russian","heeltap","plank","kneetuck"] },
-    { t: "Obliques & bas",      e: ["legraise","flutter","scissors","revcrunch","splank","superman"] },
+    { t: "Gainage solide",      e: ["plank","splank","hollow","crunch"] },
+    { t: "Tempo soutenu",       e: ["climb","bike","russian","plank"] },
+    { t: "Obliques & bas",      e: ["legraise","scissors","splank","revcrunch"] },
   ]},
   { name: "Tonus", level: "Intermédiaire", color: "#F2A23A", w: [
-    { t: "Ceinture complète",   e: ["plank","splank","plankknee","hollow","crunch","bridge"] },
-    { t: "Explosif maîtrisé",   e: ["climb","russian","bike","situp","plank","superman"] },
-    { t: "Sculpte",             e: ["legraise","scissors","toetouch","revcrunch","splank","hollow"] },
+    { t: "Ceinture complète",   e: ["plank","splank","hollow","crunch"] },
+    { t: "Explosif maîtrisé",   e: ["climb","russian","situp","plank"] },
+    { t: "Sculpte",             e: ["legraise","scissors","toetouch","splank"] },
   ]},
   { name: "Puissance", level: "Intermédiaire +", color: "#FF7A3A", w: [
-    { t: "Gainage long",        e: ["plankknee","splank","hollow","situp","plank","bridge"] },
-    { t: "Rythme haut",         e: ["climb","russian","bike","toetouch","plank","superman"] },
-    { t: "Précision",           e: ["legraise","scissors","toetouch","flutter","splank","hollow"] },
+    { t: "Gainage long",        e: ["plankknee","splank","hollow","plank"] },
+    { t: "Rythme haut",         e: ["climb","russian","toetouch","plank"] },
+    { t: "Précision",           e: ["legraise","scissors","toetouch","hollow"] },
   ]},
   { name: "Acier", level: "Avancé", color: "#FF4D2E", w: [
-    { t: "Endurance dure",      e: ["plankud","splank","hollow","plankknee","situp","bridge"] },
-    { t: "Tout-terrain",        e: ["climb","russian","vup","situp","plank","superman"] },
-    { t: "Obliques avancés",    e: ["legraise","wiper","scissors","toetouch","splank","hollow"] },
+    { t: "Endurance dure",      e: ["plankud","splank","hollow","situp"] },
+    { t: "Tout-terrain",        e: ["climb","russian","vup","plank"] },
+    { t: "Obliques avancés",    e: ["wiper","scissors","splank","hollow"] },
   ]},
   { name: "Cyclone", level: "Avancé", color: "#E5352B", w: [
-    { t: "Gainage extrême",     e: ["plankud","splank","hollow","plankknee","vup","bridge"] },
-    { t: "Intense",             e: ["climb","russian","vup","situp","plankud","superman"] },
-    { t: "Vrille",              e: ["legraise","wiper","scissors","toetouch","hollow","splank"] },
+    { t: "Gainage extrême",     e: ["plankud","splank","hollow","vup"] },
+    { t: "Intense",             e: ["climb","vup","situp","plankud"] },
+    { t: "Vrille",              e: ["wiper","scissors","hollow","splank"] },
   ]},
   { name: "Sommet", level: "Avancé +", color: "#C2241B", w: [
-    { t: "Maîtrise totale",     e: ["plankud","splank","hollow","vup","situp","plankknee"] },
-    { t: "Le grand circuit",    e: ["climb","russian","vup","situp","plankud","wiper"] },
-    { t: "Finition",            e: ["legraise","wiper","scissors","toetouch","vup","hollow"] },
+    { t: "Maîtrise totale",     e: ["plankud","hollow","vup","situp"] },
+    { t: "Le grand circuit",    e: ["climb","vup","situp","wiper"] },
+    { t: "Finition",            e: ["wiper","scissors","vup","hollow"] },
   ]},
 ];
 
 const FREQ_LABELS = { 1: "1×", 2: "2×", 3: "3×", 4: "4×", 5: "5×" };
-const WORK = 40, REST = 15, WARM = 40, STRETCH = 60, ROUNDS = 2;
+const WORK = 40, REST = 20, WARM = 40, STRETCH = 50, ROUNDS = 3;
 
 function buildSteps(workout, sessionIdx) {
   const warm = WARMUPS[sessionIdx % WARMUPS.length];
@@ -355,13 +355,13 @@ function SessionDetail({ cycle, workout, steps, letter, done, onStart, onToggle,
       <button className="ab-back" onClick={onBack}>‹ Retour</button>
       <div className="ab-chip" style={{ background: cycle.color }}>Séance {letter} · {mins} min</div>
       <h1 className="ab-display ab-h1">{workout.t}</h1>
-      <div className="ab-sub">2 tours · effort {WORK}s / repos {REST}s</div>
+      <div className="ab-sub">{ROUNDS} tours · effort {WORK}s / repos {REST}s</div>
       <div className="ab-block">
         <div className="ab-blocklabel" style={{ color: PHASE.warm.color }}>Échauffement</div>
         {warm.map((s, i) => <Row key={i} id={s.id} />)}
       </div>
       <div className="ab-block">
-        <div className="ab-blocklabel" style={{ color: PHASE.work.color }}>Circuit · ×2 tours</div>
+        <div className="ab-blocklabel" style={{ color: PHASE.work.color }}>Circuit · ×{ROUNDS} tours</div>
         {work.map((id, i) => <Row key={i} id={id} />)}
       </div>
       <div className="ab-block">
