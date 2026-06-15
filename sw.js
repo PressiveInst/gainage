@@ -1,5 +1,5 @@
 /* Pour publier une mise à jour : change le numéro de version ci-dessous. */
-const CACHE = "gainage-v1";
+const CACHE = "gainage-v2";
 
 const ASSETS = [
   "./",
