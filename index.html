@@ -167,14 +167,25 @@ function loadState() {
 }
 function saveState(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
 
+let _audioCtx = null;
+function armAudio() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    if (!_audioCtx) _audioCtx = new Ctx();
+    if (_audioCtx.state === "suspended") _audioCtx.resume();
+  } catch (e) {}
+  return _audioCtx;
+}
 function beep(freq = 660, dur = 0.12) {
   try {
-    const Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
-    const ctx = new Ctx(); const o = ctx.createOscillator(), g = ctx.createGain();
+    const ctx = armAudio(); if (!ctx) return;
+    const o = ctx.createOscillator(), g = ctx.createGain();
     o.frequency.value = freq; o.type = "sine"; o.connect(g); g.connect(ctx.destination);
-    g.gain.setValueAtTime(0.18, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-    o.start(); o.stop(ctx.currentTime + dur);
+    const t = ctx.currentTime;
+    g.gain.setValueAtTime(0.2, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.start(t); o.stop(t + dur);
   } catch (e) {}
 }
 
@@ -391,7 +402,7 @@ function SessionDetail({ cycle, workout, steps, letter, done, onStart, onToggle,
         <div className="ab-blocklabel" style={{ color: PHASE.stretch.color }}>Étirements</div>
         {stretch.map((s, i) => <Row key={i} id={s.id} />)}
       </div>
-      <button className="ab-cta" style={{ background: cycle.color }} onClick={onStart}><IcPlay size={18} /><span>Démarrer la séance</span></button>
+      <button className="ab-cta" style={{ background: cycle.color }} onClick={() => { armAudio(); onStart(); }}><IcPlay size={18} /><span>Démarrer la séance</span></button>
       <button className="ab-ghost" onClick={onToggle}>{done ? "Retirer la coche" : "Marquer comme faite (sans minuteur)"}</button>
     </div>
   );
@@ -406,9 +417,12 @@ function Timer({ steps, cycle, title, onQuit, onFinish }) {
   const step = steps[i];
   const ph = PHASE[step.phase];
   const ex = step.id ? EX[step.id] : null;
-  const next = steps[i + 1];
-  const nextEx = next && next.id ? EX[next.id] : null;
   const overallPct = (i + 1 - left / step.t) / steps.length;
+  const stepRef = useRef(step); stepRef.current = step;
+  // prochain vrai exercice (on saute les temps de repos)
+  let upcoming = null;
+  for (let k = i + 1; k < steps.length; k++) { if (steps[k].id) { upcoming = EX[steps[k].id]; break; } }
+  const ending = !!step.id && left <= 5;
 
   const goNext = useCallback(() => {
     setI((idx) => {
@@ -423,7 +437,11 @@ function Timer({ steps, cycle, title, onQuit, onFinish }) {
   useEffect(() => {
     if (paused || confirmStop) return;
     tick.current = setInterval(() => {
-      setLeft((l) => { if (l <= 1) { goNext(); return 0; } if (l <= 3) beep(880, 0.07); return l - 1; });
+      setLeft((l) => {
+        if (l <= 1) { goNext(); return 0; }
+        if (stepRef.current.id && l <= 5) beep(900, 0.08);
+        return l - 1;
+      });
     }, 1000);
     return () => clearInterval(tick.current);
   }, [paused, confirmStop, goNext]);
@@ -443,11 +461,18 @@ function Timer({ steps, cycle, title, onQuit, onFinish }) {
           <div className="ab-texcue">{ex ? ex.c : "Souffle, relâche les épaules, prépare le prochain exercice."}</div>
           {ex && <a className="ab-tyt" href={yt(ex.q)} target="_blank" rel="noreferrer"><IcPlay size={13} /><span>Voir la vidéo</span></a>}
         </div>
-        <div className="ab-tnext">{nextEx ? ("Ensuite : " + nextEx.n) : (next ? "Ensuite : repos" : "Dernier effort !")}</div>
+        {ending && upcoming ? (
+          <div className="ab-tupnext">
+            <span className="ab-tupnextlabel">Prochain exercice</span>
+            <span className="ab-tupnextname ab-display">{upcoming.n}</span>
+          </div>
+        ) : (
+          <div className="ab-tnext">{upcoming ? ("Ensuite : " + upcoming.n) : "Dernier exercice"}</div>
+        )}
         <div className="ab-tctrl">
-          <button className="ab-tbtn" onClick={() => setLeft(step.t)}><IcRestart size={22} /></button>
-          <button className="ab-tbtn big" onClick={() => setPaused((p) => !p)}>{paused ? <IcPlay size={26} /> : <IcPause size={26} />}</button>
-          <button className="ab-tbtn" onClick={goNext}><IcSkip size={22} /></button>
+          <button className="ab-tbtn" onClick={() => { armAudio(); setLeft(step.t); }}><IcRestart size={22} /></button>
+          <button className="ab-tbtn big" onClick={() => { armAudio(); setPaused((p) => !p); }}>{paused ? <IcPlay size={26} /> : <IcPause size={26} />}</button>
+          <button className="ab-tbtn" onClick={() => { armAudio(); goNext(); }}><IcSkip size={22} /></button>
         </div>
         {confirmStop ? (
           <div className="ab-tconfirm">
@@ -648,6 +673,10 @@ const CSS = `
 .ab-texcue { font-size: 14.5px; max-width: 300px; opacity: .92; margin-top: 6px; line-height: 1.35; }
 .ab-tyt { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; text-decoration: none; background: rgba(255,255,255,.22); color: #fff; font-weight: 600; font-size: 13px; padding: 9px 16px; border-radius: 100px; }
 .ab-tnext { text-align: center; font-size: 13px; opacity: .85; padding: 12px 0; }
+.ab-tupnext { text-align: center; background: #fff; border-radius: 14px; padding: 11px 14px; margin: 8px 0; animation: abPop .25s ease; }
+.ab-tupnextlabel { display: block; text-transform: uppercase; letter-spacing: 2px; font-size: 10px; font-weight: 700; color: #9A968B; }
+.ab-tupnextname { display: block; font-size: 26px; line-height: 1.05; color: #17171C; margin-top: 2px; }
+@keyframes abPop { from { transform: scale(.96); opacity: .4; } to { transform: scale(1); opacity: 1; } }
 .ab-tctrl { display: flex; align-items: center; justify-content: center; gap: 24px; }
 .ab-tbtn { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); background: transparent; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .ab-tbtn.big { width: 76px; height: 76px; background: #fff; color: #17171C; border: none; font-size: 26px; }
