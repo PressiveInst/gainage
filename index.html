@@ -26,6 +26,28 @@ const { useState, useEffect, useRef, useCallback } = React;
 
 const yt = (q) => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
 
+/* -------------------------------- Icônes -------------------------------- */
+function Svg({ size = 22, fill = "none", style, children }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor"
+    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block", ...style }}>{children}</svg>;
+}
+const IcHome = (p) => <Svg {...p}><path d="M3 11l9-7 9 7" /><path d="M5 10v9h14v-9" /></Svg>;
+const IcCal = (p) => <Svg {...p}><rect x="3" y="4.5" width="18" height="16.5" rx="2.5" /><path d="M3 9.5h18" /><path d="M8 2.5v4" /><path d="M16 2.5v4" /></Svg>;
+const IcSliders = (p) => <Svg {...p}><path d="M4 7h9" /><path d="M17 7h3" /><circle cx="15" cy="7" r="2.2" /><path d="M4 17h3" /><path d="M11 17h9" /><circle cx="9" cy="17" r="2.2" /></Svg>;
+const IcPlay = (p) => <Svg {...p} fill="currentColor"><path d="M8 5.5v13l11-6.5z" stroke="none" /></Svg>;
+const IcPause = (p) => <Svg {...p} fill="currentColor"><rect x="7" y="5" width="3.6" height="14" rx="1" stroke="none" /><rect x="13.4" y="5" width="3.6" height="14" rx="1" stroke="none" /></Svg>;
+const IcSkip = (p) => <Svg {...p} fill="currentColor"><path d="M6 5.5v13l9-6.5z" stroke="none" /><rect x="16" y="5" width="2.6" height="14" rx="1" stroke="none" /></Svg>;
+const IcRestart = (p) => <Svg {...p}><path d="M4.5 12a7.5 7.5 0 1 1 2.3 5.4" /><path d="M3.6 19.4V14h5.4" /></Svg>;
+const IcClose = (p) => <Svg {...p}><path d="M6 6l12 12" /><path d="M18 6L6 18" /></Svg>;
+const IcCheck = (p) => <Svg {...p}><path d="M5 12.5l4.5 4.5L19 7" /></Svg>;
+const IcChevron = (p) => <Svg {...p}><path d="M9 5l7 7-7 7" /></Svg>;
+const IcChevronLeft = (p) => <Svg {...p}><path d="M15 5l-7 7 7 7" /></Svg>;
+const IcChevronDown = (p) => <Svg {...p}><path d="M5 9l7 7 7-7" /></Svg>;
+const IcDownload = (p) => <Svg {...p}><path d="M12 4v11" /><path d="M7.5 11l4.5 4.5 4.5-4.5" /><path d="M5 20h14" /></Svg>;
+const IcAward = (p) => <Svg {...p}><circle cx="12" cy="9" r="5.2" /><path d="M8.5 13.2L7 21.5l5-3 5 3-1.5-8.3" /></Svg>;
+const IcDoneCircle = (p) => <Svg {...p}><circle cx="12" cy="12" r="9" /><path d="M8.2 12.3l2.6 2.6 5-5.4" /></Svg>;
+const IcStop = (p) => <Svg {...p} fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2.5" stroke="none" /></Svg>;
+
 /* ------------------------------- Exercices ------------------------------ */
 const EX = {
   jj:      { n: "Jumping jacks",        c: "Saute en écartant bras et jambes, rythme régulier.", q: "jumping jacks echauffement" },
@@ -184,8 +206,8 @@ function useInstall() {
 }
 
 function InstallBlock({ inst }) {
-  if (inst.isStandalone) return <div className="ab-instok">✓ L'application est installée sur cet appareil.</div>;
-  if (inst.canInstall) return <button className="ab-cta" style={{ background: "#17171C" }} onClick={inst.install}>⤓ Installer l'application</button>;
+  if (inst.isStandalone) return <div className="ab-instok"><IcCheck size={18} /><span>L'application est installée sur cet appareil.</span></div>;
+  if (inst.canInstall) return <button className="ab-cta" style={{ background: "#17171C" }} onClick={inst.install}><IcDownload size={20} /><span>Installer l'application</span></button>;
   if (inst.isIOS) return <div className="ab-instnote">Sur iPhone : appuie sur <b>Partager</b> (le carré avec une flèche, en bas de Safari), puis <b>« Sur l'écran d'accueil »</b>.</div>;
   return <div className="ab-instnote">Dans le menu de ton navigateur, choisis <b>« Installer l'application »</b> ou <b>« Ajouter à l'écran d'accueil »</b>.</div>;
 }
@@ -260,9 +282,9 @@ function Shell({ children, tab, setTab }) {
         <div className="ab-content">{children}</div>
         {tab && (
           <nav className="ab-nav">
-            <NavBtn active={tab === "home"} onClick={() => setTab("home")} label="Aujourd'hui" icon="●" />
-            <NavBtn active={tab === "program"} onClick={() => setTab("program")} label="Programme" icon="▦" />
-            <NavBtn active={tab === "settings"} onClick={() => setTab("settings")} label="Réglages" icon="⚙" />
+            <NavBtn active={tab === "home"} onClick={() => setTab("home")} label="Aujourd'hui" icon={<IcHome size={22} />} />
+            <NavBtn active={tab === "program"} onClick={() => setTab("program")} label="Programme" icon={<IcCal size={22} />} />
+            <NavBtn active={tab === "settings"} onClick={() => setTab("settings")} label="Réglages" icon={<IcSliders size={22} />} />
           </nav>
         )}
       </div>
@@ -272,6 +294,7 @@ function Shell({ children, tab, setTab }) {
 function NavBtn({ active, onClick, label, icon }) {
   return (
     <button className={"ab-navbtn" + (active ? " on" : "")} onClick={onClick}>
+      {active && <span className="ab-navind" />}
       <span className="ab-navicon">{icon}</span><span>{label}</span>
     </button>
   );
@@ -289,10 +312,10 @@ function Home({ state, cycle, doneCount, weekComplete, onOpen, onValidate, inst 
           <img src="./icon-192.png" alt="" className="ab-installicon" />
           <div style={{ flex: 1 }}>
             <div className="ab-installtitle">Installer Gainage</div>
-            <div className="ab-installsub">{inst.isIOS ? "Partager → Sur l'écran d'accueil" : "Pour l'ouvrir comme une vraie app"}</div>
+            <div className="ab-installsub">{inst.isIOS ? "Partager, puis Sur l'écran d'accueil" : "Pour l'ouvrir comme une vraie app"}</div>
           </div>
           {inst.canInstall && <button className="ab-installbtn" onClick={inst.install}>Installer</button>}
-          <button className="ab-installx" onClick={() => setHideBanner(true)}>✕</button>
+          <button className="ab-installx" onClick={() => setHideBanner(true)}><IcClose size={16} /></button>
         </div>
       )}
       <div className="ab-eyebrow">Aujourd'hui</div>
@@ -317,19 +340,19 @@ function Home({ state, cycle, doneCount, weekComplete, onOpen, onValidate, inst 
           const done = !!state.done[state.ci + "-" + state.wk + "-" + si];
           return (
             <button key={si} className={"ab-task" + (done ? " done" : "")} onClick={() => onOpen(si)}>
-              <span className={"ab-check" + (done ? " on" : "")} style={done ? { background: cycle.color, borderColor: cycle.color } : {}}>{done ? "✓" : ""}</span>
+              <span className={"ab-check" + (done ? " on" : "")} style={done ? { background: cycle.color, borderColor: cycle.color } : {}}>{done && <IcCheck size={16} />}</span>
               <span className="ab-taskbody">
                 <span className="ab-tasktitle">{w.t}</span>
                 <span className="ab-taskmeta">Séance {si + 1} · 15 min · {w.e.length} exercices</span>
               </span>
-              <span className="ab-go">›</span>
+              <span className="ab-go"><IcChevron size={20} /></span>
             </button>
           );
         })}
       </div>
       {weekComplete ? (
         <button className="ab-cta" style={{ background: cycle.color }} onClick={onValidate}>
-          {state.wk < 6 ? "Valider la semaine →" : (state.ci < CYCLES.length - 1 ? "Cycle suivant →" : "Terminer l'année 🏆")}
+          {state.wk < 6 ? "Valider la semaine" : (state.ci < CYCLES.length - 1 ? "Cycle suivant" : "Terminer l'année")}
         </button>
       ) : (
         <div className="ab-hint">Coche tes {total} séances pour débloquer la semaine suivante.</div>
@@ -347,12 +370,12 @@ function SessionDetail({ cycle, workout, steps, letter, done, onStart, onToggle,
   const Row = ({ id }) => (
     <div className="ab-exrow">
       <div className="ab-exinfo"><div className="ab-exname">{EX[id].n}</div><div className="ab-excue">{EX[id].c}</div></div>
-      <a className="ab-yt" href={yt(EX[id].q)} target="_blank" rel="noreferrer">▶ vidéo</a>
+      <a className="ab-yt" href={yt(EX[id].q)} target="_blank" rel="noreferrer"><IcPlay size={13} /><span>Vidéo</span></a>
     </div>
   );
   return (
     <div>
-      <button className="ab-back" onClick={onBack}>‹ Retour</button>
+      <button className="ab-back" onClick={onBack}><IcChevronLeft size={18} /><span>Retour</span></button>
       <div className="ab-chip" style={{ background: cycle.color }}>Séance {letter} · {mins} min</div>
       <h1 className="ab-display ab-h1">{workout.t}</h1>
       <div className="ab-sub">{ROUNDS} tours · effort {WORK}s / repos {REST}s</div>
@@ -368,7 +391,7 @@ function SessionDetail({ cycle, workout, steps, letter, done, onStart, onToggle,
         <div className="ab-blocklabel" style={{ color: PHASE.stretch.color }}>Étirements</div>
         {stretch.map((s, i) => <Row key={i} id={s.id} />)}
       </div>
-      <button className="ab-cta" style={{ background: cycle.color }} onClick={onStart}>▶ Démarrer la séance</button>
+      <button className="ab-cta" style={{ background: cycle.color }} onClick={onStart}><IcPlay size={18} /><span>Démarrer la séance</span></button>
       <button className="ab-ghost" onClick={onToggle}>{done ? "Retirer la coche" : "Marquer comme faite (sans minuteur)"}</button>
     </div>
   );
@@ -378,6 +401,7 @@ function Timer({ steps, cycle, title, onQuit, onFinish }) {
   const [i, setI] = useState(0);
   const [left, setLeft] = useState(steps[0].t);
   const [paused, setPaused] = useState(false);
+  const [confirmStop, setConfirmStop] = useState(false);
   const tick = useRef();
   const step = steps[i];
   const ph = PHASE[step.phase];
@@ -397,20 +421,19 @@ function Timer({ steps, cycle, title, onQuit, onFinish }) {
   }, [steps, onFinish]);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || confirmStop) return;
     tick.current = setInterval(() => {
       setLeft((l) => { if (l <= 1) { goNext(); return 0; } if (l <= 3) beep(880, 0.07); return l - 1; });
     }, 1000);
     return () => clearInterval(tick.current);
-  }, [paused, goNext]);
+  }, [paused, confirmStop, goNext]);
 
   return (
     <div className="ab-root">
       <style>{CSS}</style>
       <div className="ab-timer" style={{ background: ph.color }}>
         <div className="ab-timertop">
-          <button className="ab-tquit" onClick={onQuit}>✕</button>
-          <div className="ab-tmeta">{title}</div><div style={{ width: 34 }} />
+          <div className="ab-tmeta">{title}</div>
         </div>
         <div className="ab-tprogress"><div className="ab-tprogressfill" style={{ width: (overallPct * 100) + "%" }} /></div>
         <div className="ab-tcenter">
@@ -418,14 +441,25 @@ function Timer({ steps, cycle, title, onQuit, onFinish }) {
           <TimerRing pct={left / step.t}><div className="ab-display ab-tcount">{left}</div></TimerRing>
           <div className="ab-texname ab-display">{ex ? ex.n : "Récupère"}</div>
           <div className="ab-texcue">{ex ? ex.c : "Souffle, relâche les épaules, prépare le prochain exercice."}</div>
-          {ex && <a className="ab-tyt" href={yt(ex.q)} target="_blank" rel="noreferrer">▶ Voir la vidéo</a>}
+          {ex && <a className="ab-tyt" href={yt(ex.q)} target="_blank" rel="noreferrer"><IcPlay size={13} /><span>Voir la vidéo</span></a>}
         </div>
         <div className="ab-tnext">{nextEx ? ("Ensuite : " + nextEx.n) : (next ? "Ensuite : repos" : "Dernier effort !")}</div>
         <div className="ab-tctrl">
-          <button className="ab-tbtn" onClick={() => setLeft(step.t)}>↺</button>
-          <button className="ab-tbtn big" onClick={() => setPaused((p) => !p)}>{paused ? "▶" : "❚❚"}</button>
-          <button className="ab-tbtn" onClick={goNext}>⏭</button>
+          <button className="ab-tbtn" onClick={() => setLeft(step.t)}><IcRestart size={22} /></button>
+          <button className="ab-tbtn big" onClick={() => setPaused((p) => !p)}>{paused ? <IcPlay size={26} /> : <IcPause size={26} />}</button>
+          <button className="ab-tbtn" onClick={goNext}><IcSkip size={22} /></button>
         </div>
+        {confirmStop ? (
+          <div className="ab-tconfirm">
+            <span className="ab-tconfirmtxt">Arrêter la séance ? Elle ne sera pas comptée comme faite.</span>
+            <div className="ab-tconfirmrow">
+              <button className="ab-tcont" onClick={() => setConfirmStop(false)}>Continuer</button>
+              <button className="ab-tend" onClick={onQuit}>Oui, arrêter</button>
+            </div>
+          </div>
+        ) : (
+          <button className="ab-tstop" onClick={() => setConfirmStop(true)}><IcStop size={17} /><span>Arrêter la séance</span></button>
+        )}
       </div>
     </div>
   );
@@ -434,7 +468,7 @@ function Timer({ steps, cycle, title, onQuit, onFinish }) {
 function SessionDone({ cycle, onBack }) {
   return (
     <div className="ab-center">
-      <div className="ab-bigemoji">🔥</div>
+      <div className="ab-bigicon" style={{ color: cycle.color }}><IcDoneCircle size={68} /></div>
       <h1 className="ab-display ab-h1" style={{ fontSize: 46 }}>Séance bouclée</h1>
       <div className="ab-sub" style={{ marginBottom: 26 }}>15 minutes de plus dans le réservoir. Bien joué.</div>
       <button className="ab-cta" style={{ background: cycle.color, maxWidth: 320 }} onClick={onBack}>Retour à l'accueil</button>
@@ -445,10 +479,10 @@ function YearDone({ onRestart }) {
   return (
     <div className="ab-root"><style>{CSS}</style><div className="ab-screen"><div className="ab-content">
       <div className="ab-center">
-        <div className="ab-bigemoji">🏆</div>
-        <h1 className="ab-display ab-h1" style={{ fontSize: 44 }}>Une année complète !</h1>
+        <div className="ab-bigicon" style={{ color: "#FF4D2E" }}><IcAward size={70} /></div>
+        <h1 className="ab-display ab-h1" style={{ fontSize: 44 }}>Une année complète</h1>
         <div className="ab-sub" style={{ marginBottom: 26 }}>8 cycles, 48 semaines. Ton gainage n'a plus rien à voir avec le départ. Tu peux relancer l'année — les mêmes cycles, mais tu es plus fort cette fois.</div>
-        <button className="ab-cta" style={{ background: "#FF4D2E", maxWidth: 320 }} onClick={onRestart}>↺ Recommencer l'année</button>
+        <button className="ab-cta" style={{ background: "#FF4D2E", maxWidth: 320 }} onClick={onRestart}><IcRestart size={18} /><span>Recommencer l'année</span></button>
       </div>
     </div></div></div>
   );
@@ -472,7 +506,7 @@ function Program({ ci, wk }) {
                 <span className="ab-pcycname ab-display">{c.name}</span>
                 <span className="ab-pcyclvl">{c.level} · {status}</span>
               </span>
-              <span className="ab-go">{isOpen ? "−" : "+"}</span>
+              <span className="ab-go"><IcChevronDown size={20} style={{ transform: isOpen ? "rotate(180deg)" : "none", transition: "transform .2s" }} /></span>
             </button>
             {isOpen && (
               <div className="ab-pcycbody">
@@ -579,13 +613,14 @@ const CSS = `
 .ab-taskbody { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .ab-tasktitle { font-weight: 700; font-size: 16px; }
 .ab-taskmeta { font-size: 12.5px; color: #8C887E; }
-.ab-go { color: #C3BFB3; font-size: 26px; line-height: 1; }
-.ab-cta { width: 100%; border: none; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; padding: 16px; border-radius: 16px; cursor: pointer; margin-top: 6px; box-shadow: 0 6px 16px rgba(0,0,0,.14); transition: transform .1s; }
+.ab-go { color: #C3BFB3; display: flex; align-items: center; flex-shrink: 0; }
+.ab-cta { width: 100%; border: none; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; padding: 15px 16px; border-radius: 16px; cursor: pointer; margin-top: 6px; box-shadow: 0 6px 16px rgba(0,0,0,.14); transition: transform .1s; display: flex; align-items: center; justify-content: center; gap: 9px; }
+.ab-cta svg { margin-top: -2px; }
 .ab-cta:active { transform: translateY(1px); }
 .ab-ghost { width: 100%; background: transparent; border: 1.5px solid #D2CEC3; color: #57544D; font-weight: 600; font-size: 14px; padding: 13px; border-radius: 14px; cursor: pointer; margin-top: 10px; }
 .ab-danger { background: #FF4D2E; border: none; color: #fff; font-weight: 700; font-size: 14px; padding: 11px 16px; border-radius: 12px; cursor: pointer; }
 .ab-hint { font-size: 13px; color: #8C887E; text-align: center; padding: 10px 6px; }
-.ab-back { background: none; border: none; color: #8C887E; font-weight: 600; font-size: 15px; padding: 0 0 14px; cursor: pointer; }
+.ab-back { background: none; border: none; color: #8C887E; font-weight: 600; font-size: 15px; padding: 0 0 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; }
 .ab-block { background: #fff; border-radius: 18px; padding: 16px 16px 6px; margin: 14px 0; }
 .ab-blocklabel { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
 .ab-exrow { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #F0EEE8; }
@@ -593,10 +628,16 @@ const CSS = `
 .ab-exinfo { flex: 1; }
 .ab-exname { font-weight: 700; font-size: 15px; }
 .ab-excue { font-size: 12.5px; color: #8C887E; margin-top: 1px; }
-.ab-yt { flex-shrink: 0; text-decoration: none; background: #17171C; color: #fff; font-size: 12px; font-weight: 600; padding: 7px 11px; border-radius: 100px; white-space: nowrap; }
-.ab-timer { max-width: 460px; margin: 0 auto; min-height: 100vh; color: #fff; display: flex; flex-direction: column; padding: 18px 20px 26px; transition: background .4s ease; }
-.ab-timertop { display: flex; align-items: center; justify-content: space-between; }
-.ab-tquit { width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
+.ab-yt { flex-shrink: 0; text-decoration: none; background: #17171C; color: #fff; font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 100px; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
+.ab-timer { max-width: 460px; margin: 0 auto; min-height: 100vh; color: #fff; display: flex; flex-direction: column; padding: calc(16px + env(safe-area-inset-top)) 20px calc(22px + env(safe-area-inset-bottom)); transition: background .4s ease; }
+.ab-timertop { display: flex; align-items: center; justify-content: center; min-height: 30px; }
+.ab-tstop { margin-top: 18px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 9px; background: rgba(0,0,0,.16); border: 1.5px solid rgba(255,255,255,.45); color: #fff; font-weight: 600; font-size: 15px; padding: 14px; border-radius: 14px; cursor: pointer; }
+.ab-tstop:active { background: rgba(0,0,0,.28); }
+.ab-tconfirm { margin-top: 18px; background: rgba(0,0,0,.2); border-radius: 14px; padding: 14px; }
+.ab-tconfirmtxt { display: block; text-align: center; font-size: 14px; line-height: 1.4; margin-bottom: 12px; }
+.ab-tconfirmrow { display: flex; gap: 10px; }
+.ab-tcont { flex: 1; background: transparent; border: 1.5px solid rgba(255,255,255,.5); color: #fff; font-weight: 600; font-size: 15px; padding: 12px; border-radius: 12px; cursor: pointer; }
+.ab-tend { flex: 1; background: #fff; border: none; color: #17171C; font-weight: 700; font-size: 15px; padding: 12px; border-radius: 12px; cursor: pointer; }
 .ab-tmeta { font-weight: 700; font-size: 14px; opacity: .9; }
 .ab-tprogress { height: 5px; background: rgba(255,255,255,.25); border-radius: 100px; margin: 14px 0 6px; overflow: hidden; }
 .ab-tprogressfill { height: 100%; background: #fff; border-radius: 100px; transition: width 1s linear; }
@@ -605,13 +646,13 @@ const CSS = `
 .ab-tcount { font-size: 86px; line-height: 1; }
 .ab-texname { font-size: 34px; margin-top: 4px; }
 .ab-texcue { font-size: 14.5px; max-width: 300px; opacity: .92; margin-top: 6px; line-height: 1.35; }
-.ab-tyt { display: inline-block; margin-top: 14px; text-decoration: none; background: rgba(255,255,255,.22); color: #fff; font-weight: 600; font-size: 13px; padding: 9px 16px; border-radius: 100px; }
+.ab-tyt { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; text-decoration: none; background: rgba(255,255,255,.22); color: #fff; font-weight: 600; font-size: 13px; padding: 9px 16px; border-radius: 100px; }
 .ab-tnext { text-align: center; font-size: 13px; opacity: .85; padding: 12px 0; }
 .ab-tctrl { display: flex; align-items: center; justify-content: center; gap: 24px; }
-.ab-tbtn { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); background: transparent; color: #fff; font-size: 20px; cursor: pointer; }
+.ab-tbtn { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); background: transparent; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .ab-tbtn.big { width: 76px; height: 76px; background: #fff; color: #17171C; border: none; font-size: 26px; }
 .ab-center { text-align: center; padding: 40px 8px; display: flex; flex-direction: column; align-items: center; min-height: 70vh; justify-content: center; }
-.ab-bigemoji { font-size: 64px; margin-bottom: 6px; }
+.ab-bigicon { margin-bottom: 14px; display: flex; }
 .ab-pcyc { background: #fff; border-radius: 16px; margin-bottom: 10px; overflow: hidden; }
 .ab-pcyc.current { outline: 2px solid #17171C; }
 .ab-pcychead { width: 100%; display: flex; align-items: center; gap: 14px; background: none; border: none; padding: 14px 16px; cursor: pointer; }
@@ -629,17 +670,18 @@ const CSS = `
 .ab-confirm { background: #fff; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; }
 .ab-foot { text-align: center; font-size: 12px; color: #B2AEA3; margin-top: 40px; }
 .ab-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 460px; display: flex; background: rgba(255,255,255,.96); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-top: 1px solid #E4E1D8; padding: 9px 8px calc(9px + env(safe-area-inset-bottom)); z-index: 50; }
-.ab-navbtn { flex: 1; background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: #ABA79C; cursor: pointer; padding: 5px 0; }
+.ab-navbtn { position: relative; flex: 1; background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: .2px; color: #ADA99E; cursor: pointer; padding: 7px 0 3px; transition: color .15s; }
 .ab-navbtn.on { color: #17171C; }
-.ab-navicon { font-size: 18px; line-height: 1; }
+.ab-navicon { display: flex; align-items: center; justify-content: center; height: 24px; }
+.ab-navind { position: absolute; top: -9px; width: 26px; height: 3px; border-radius: 0 0 4px 4px; background: #17171C; }
 .ab-installbanner { display: flex; align-items: center; gap: 12px; background: #17171C; color: #fff; border-radius: 16px; padding: 12px 14px; margin-bottom: 18px; }
 .ab-installicon { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; }
 .ab-installtitle { font-weight: 700; font-size: 15px; }
 .ab-installsub { font-size: 12px; opacity: .72; margin-top: 1px; }
 .ab-installbtn { background: #FF4D2E; border: none; color: #fff; font-weight: 700; font-size: 13px; padding: 9px 14px; border-radius: 100px; cursor: pointer; flex-shrink: 0; }
-.ab-installx { background: none; border: none; color: rgba(255,255,255,.55); font-size: 14px; cursor: pointer; padding: 4px; flex-shrink: 0; }
+.ab-installx { background: none; border: none; color: rgba(255,255,255,.55); cursor: pointer; padding: 4px; flex-shrink: 0; display: flex; align-items: center; }
 .ab-instnote { background: #fff; border-radius: 14px; padding: 14px; font-size: 13.5px; color: #57544D; line-height: 1.45; }
-.ab-instok { background: #fff; border-radius: 14px; padding: 14px; font-size: 14px; color: #2BB3A3; font-weight: 600; }
+.ab-instok { background: #fff; border-radius: 14px; padding: 14px; font-size: 14px; color: #2BB3A3; font-weight: 600; display: flex; align-items: center; gap: 9px; }
 `;
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
